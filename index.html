@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hogar Propiedades – Prototipos</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --green-dark:  #1a4731;
+    --green-mid:   #2d6a4f;
+    --green-light: #52b788;
+    --green-pale:  #d8f3dc;
+    --green-xpale: #f0faf3;
+    --gold:        #c9a84c;
+    --white:       #ffffff;
+    --gray-50:     #f9fafb;
+    --gray-100:    #f3f4f6;
+    --gray-200:    #e5e7eb;
+    --gray-400:    #9ca3af;
+    --gray-600:    #4b5563;
+    --gray-800:    #1f2937;
+    --red:         #dc2626;
+    --amber:       #d97706;
+    --blue:        #2563eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #eef4f0;
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  /* ── NAV SUPERIOR ── */
+  .app-nav {
+    background: var(--green-dark);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  .app-nav .logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    padding: 16px 24px 16px 0;
+    border-right: 1px solid rgba(255,255,255,.2);
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .flow-tab {
+    padding: 18px 20px;
+    color: rgba(255,255,255,.6);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .flow-tab:hover { color: rgba(255,255,255,.9); }
+  .flow-tab.active {
+    color: var(--white);
+    border-bottom-color: var(--green-light);
+  }
+
+  /* ── CONTENEDOR DE FLUJOS ── */
+  .flow { display: none; padding: 36px 32px; max-width: 1100px; margin: 0 auto; }
+  .flow.active { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .flow-header { margin-bottom: 28px; }
+  .flow-header .badge {
+    display: inline-block;
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+  .flow-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--green-dark);
+    margin-bottom: 6px;
+  }
+  .flow-header p { color: var(--gray-600); font-size: 14px; }
+
+  /* ── PANTALLAS (frames) ── */
+  .screens-row {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .screen {
+    background: var(--white);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.08);
+    overflow: hidden;
+    flex: 1;
+    min-width: 280px;
+  }
+  .screen-bar {
+    background: var(--green-dark);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .screen-bar .dots { display:flex; gap:5px; }
+  .screen-bar .dot { width:8px; height:8px; border-radius:50%; }
+  .dot-r { background:#ff5f57; }
+  .dot-y { background:#febc2e; }
+  .dot-g { background:#28c840; }
+  .screen-bar .screen-title {
+    color: rgba(255,255,255,.75);
+    font-size: 11px;
+    margin-left: 6px;
+    font-weight: 500;
+  }
+  .screen-body { padding: 20px; }
+
+  /* ── FLECHA entre pantallas ── */
+  .arrow-between {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+    gap: 4px;
+    color: var(--green-mid);
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 40px;
+  }
+  .arrow-between svg { width: 22px; height: 22px; }
+
+  /* ── COMPONENTES REUTILIZABLES ── */
+
+  /* navbar dentro del prototipo */
+  .proto-nav {
+    background: var(--green-dark);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: -20px -20px 16px -20px;
+  }
+  .proto-nav .pn-logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .proto-nav .pn-links { display:flex; gap:12px; }
+  .proto-nav .pn-links a {
+    color: rgba(255,255,255,.7);
+    font-size: 10px;
+    text-decoration: none;
+  }
+
+  /* search bar */
+  .search-bar {
+    display: flex;
+    gap: 6px;
+    background: var(--gray-100);
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 8px 12px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .search-bar input {
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    flex: 1;
+    outline: none;
+    color: var(--gray-800);
+  }
+  .search-bar svg { color: var(--gray-400); width: 14px; height: 14px; }
+
+  /* filtros */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .filter-chip {
+    border: 1.5px solid var(--gray-200);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 10px;
+    color: var(--gray-600);
+    background: var(--white);
+    cursor: pointer;
+  }
+  .filter-chip.active {
+    border-color: var(--green-mid);
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-weight: 600;
+  }
+
+  /* tarjeta de propiedad */
+  .prop-card {
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: box-shadow .2s;
+  }
+  .prop-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+  .prop-img {
+    height: 90px;
+    background: linear-gradient(135deg, var(--green-mid) 0%, var(--green-light) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .prop-img svg { width: 32px; height: 32px; color: rgba(255,255,255,.5); }
+  .prop-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--green-dark);
+    color: var(--white);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .prop-badge.gold { background: var(--gold); }
+  .prop-info { padding: 10px; }
+  .prop-info h3 { font-size: 12px; font-weight: 600; color: var(--gray-800); margin-bottom: 2px; }
+  .prop-info .prop-loc { font-size: 10px; color: var(--gray-400); margin-bottom: 6px; }
+  .prop-info .prop-price { font-size: 14px; font-weight: 700; color: var(--green-dark); }
+  .prop-info .prop-meta { display:flex; gap:8px; margin-top:4px; }
+  .prop-info .prop-meta span { font-size: 9px; color: var(--gray-400); display:flex; align-items:center; gap:2px; }
+
+  /* botón primario */
+  .btn-primary {
+    background: var(--green-mid);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background .2s;
+  }
+  .btn-primary:hover { background: var(--green-dark); }
+
+  .btn-secondary {
+    background: var(--white);
+    color: var(--green-mid);
+    border: 1.5px solid var(--green-mid);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all .2s;
+  }
+
+  /* detalle propiedad */
+  .detail-imgs {
+    height: 110px;
+    background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-light) 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .detail-imgs svg { width:40px; height:40px; color:rgba(255,255,255,.4); }
+  .detail-imgs .img-count {
+    position:absolute; bottom:8px; right:8px;
+    background:rgba(0,0,0,.5); color:#fff;
+    font-size:9px; padding:2px 6px; border-radius:4px;
+  }
+
+  .detail-title { font-family:'Playfair Display',serif; font-size:16px; color:var(--green-dark); margin-bottom:4px; }
+  .detail-price { font-size:18px; font-weight:700; color:var(--green-mid); margin-bottom:10px; }
+  .detail-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .detail-chip {
+    background:var(--green-pale);
+    color:var(--green-dark);
+    font-size:9px;
+    font-weight:600;
+    padding:3px 8px;
+    border-radius:20px;
+  }
+  .detail-desc { font-size:11px; color:var(--gray-600); line-height:1.6; margin-bottom:14px; }
+
+  /* formulario contacto / visita */
+  .form-group { margin-bottom: 10px; }
+  .form-group label { font-size: 10px; font-weight: 600; color: var(--gray-600); display:block; margin-bottom:3px; }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 7px;
+    padding: 7px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    color: var(--gray-800);
+    outline: none;
+    transition: border-color .2s;
+    background: var(--gray-50);
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--green-mid); background: var(--white); }
+  .form-group textarea { resize: none; height: 56px; }
+
+  /* estado badge */
+  .estado {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .estado-pub { background:#d1fae5; color:#065f46; }
+  .estado-pend { background:#fef3c7; color:#92400e; }
+  .estado-res { background:#ede9fe; color:#5b21b6; }
+  .estado-vend { background:#fee2e2; color:#991b1b; }
+  .estado-conf { background:#dbeafe; color:#1e40af; }
+  .estado-act { background:#d1fae5; color:#065f46; }
+  .estado-fin { background:#f3f4f6; color:#374151; }
+
+  /* tabla simple */
+  .mini-table { width:100%; border-collapse:collapse; font-size:11px; }
+  .mini-table th {
+    background: var(--green-pale);
+    color: var(--green-dark);
+    font-weight:600;
+    padding:7px 8px;
+    text-align:left;
+    font-size:10px;
+  }
+  .mini-table td { padding:7px 8px; border-bottom:1px solid var(--gray-100); color:var(--gray-600); }
+  .mini-table tr:hover td { background:var(--gray-50); }
+
+  /* sidebar admin */
+  .admin-layout { display:flex; gap:0; margin:-20px; }
+  .admin-sidebar {
+    background: var(--green-dark);
+    width: 110px;
+    min-height: 400px;
+    padding: 16px 0;
+    flex-shrink: 0;
+  }
+  .admin-sidebar .sb-logo {
+    font-family:'Playfair Display',serif;
+    color:var(--white);
+    font-size:11px;
+    font-weight:700;
+    padding:0 12px 16px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    margin-bottom:8px;
+  }
+  .sb-item {
+    padding:8px 12px;
+    color:rgba(255,255,255,.6);
+    font-size:10px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    text-align:center;
+  }
+  .sb-item svg { width:16px; height:16px; }
+  .sb-item.active { color:var(--white); background:rgba(255,255,255,.1); border-left:3px solid var(--green-light); }
+
+  .admin-content { flex:1; padding:16px; overflow:hidden; }
+  .admin-content h2 { font-size:14px; font-weight:700; color:var(--green-dark); margin-bottom:12px; font-family:'Playfair Display',serif; }
+
+  /* stats cards */
+  .stats-row { display:flex; gap:8px; margin-bottom:14px; }
+  .stat-card {
+    flex:1;
+    background:var(--white);
+    border:1.5px solid var(--gray-200);
+    border-radius:8px;
+    padding:10px;
+    text-align:center;
+  }
+  .stat-card .sv { font-size:20px; font-weight:700; color:var(--green-dark); }
+  .stat-card .sl { font-size:9px; color:var(--gray-400); margin-top:2px; }
+
+  /* gráfico de barras simple */
+  .bar-chart { display:flex; align-items:flex-end; gap:6px; height:80px; margin-bottom:6px; }
+  .bar {
+    flex:1;
+    background: linear-gradient(to top, var(--green-dark), var(--green-light));
+    border-radius:4px 4px 0 0;
+    position:relative;
+  }
+  .bar-label { font-size:8px; color:var(--gray-400); text-align:center; margin-top:3px; }
+
+  /* steps / progreso */
+  .steps { display:flex; align-items:center; gap:0; margin-bottom:18px; }
+  .step {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    flex:1;
+    position:relative;
+  }
+  .step::after {
+    content:'';
+    position:absolute;
+    top:12px;
+    left:50%;
+    width:100%;
+    height:2px;
+    background:var(--gray-200);
+    z-index:0;
+  }
+  .step:last-child::after { display:none; }
+  .step-circle {
+    width:24px; height:24px;
+    border-radius:50%;
+    background:var(--gray-200);
+    color:var(--gray-400);
+    font-size:10px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    z-index:1;
+  }
+  .step.done .step-circle { background:var(--green-mid); color:var(--white); }
+  .step.active .step-circle { background:var(--green-dark); color:var(--white); box-shadow:0 0 0 3px var(--green-pale); }
+  .step-label { font-size:8px; color:var(--gray-400); margin-top:4px; text-align:center; }
+  .step.done .step-label, .step.active .step-label { color:var(--green-dark); font-weight:600; }
+
+  /* divider con texto */
+  .section-label {
+    font-size:10px;
+    font-weight:700;
+    color:var(--gray-400);
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    margin-top:14px;
+  }
+
+  /* tag success */
+  .success-box {
+    background:var(--green-pale);
+    border:1.5px solid var(--green-light);
+    border-radius:10px;
+    padding:14px;
+    text-align:center;
+  }
+  .success-box svg { width:28px; height:28px; color:var(--green-mid); margin-bottom:6px; }
+  .success-box h3 { font-size:13px; font-weight:700; color:var(--green-dark); margin-bottom:4px; }
+  .success-box p { font-size:10px; color:var(--gray-600); }
+
+  /* upload area */
+  .upload-area {
+    border: 2px dashed var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 10px;
+    background: var(--gray-50);
+  }
+  .upload-area svg { width:24px; height:24px; color:var(--gray-400); margin-bottom:4px; }
+  .upload-area p { font-size:10px; color:var(--gray-400); }
+  .upload-area span { font-size:9px; color:var(--green-mid); font-weight:600; cursor:pointer; }
+
+  /* notificación / alert */
+  .alert {
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:11px;
+    margin-bottom:10px;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .alert svg { width:14px; height:14px; flex-shrink:0; margin-top:1px; }
+  .alert-info { background:#dbeafe; color:#1e40af; }
+  .alert-success { background:#d1fae5; color:#065f46; }
+  .alert-warn { background:#fef3c7; color:#92400e; }
+
+  /* contrato item */
+  .contrato-item {
+    border:1.5px solid var(--gray-200);
+    border-radius:8px;
+    padding:10px 12px;
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .contrato-item h4 { font-size:11px; font-weight:600; color:var(--gray-800); margin-bottom:2px; }
+  .contrato-item p { font-size:10px; color:var(--gray-400); }
+
+  /* vendedor card */
+  .vendedor-row {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px solid var(--gray-100);
+  }
+  .vendedor-avatar {
+    width:32px; height:32px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--green-mid), var(--green-light));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--white);
+    font-size:11px;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .vendedor-info { flex:1; }
+  .vendedor-info h4 { font-size:11px; font-weight:600; color:var(--gray-800); }
+  .vendedor-info p { font-size:9px; color:var(--gray-400); }
+  .vendedor-score { font-size:13px; font-weight:700; color:var(--green-dark); }
+
+  /* mini progress bar */
+  .prog-bar { height:5px; background:var(--gray-200); border-radius:3px; margin-top:3px; }
+  .prog-bar-fill { height:100%; border-radius:3px; background:linear-gradient(to right, var(--green-mid), var(--green-light)); }
+
+  .mt8 { margin-top:8px; }
+  .mb4 { margin-bottom:4px; }
+  .row { display:flex; gap:8px; }
+  .col { flex:1; }
+</style>
+</head>
+<body>
+
+<!-- NAV PRINCIPAL -->
+<nav class="app-nav">
+  <div class="logo">🏡 Hogar Propiedades</div>
+  <div class="flow-tab active" onclick="showFlow(0)">1. Buscar propiedad</div>
+  <div class="flow-tab" onclick="showFlow(1)">2. Publicar propiedad</div>
+  <div class="flow-tab" onclick="showFlow(2)">3. Solicitar visita</div>
+  <div class="flow-tab" onclick="showFlow(3)">4. Gestionar contrato</div>
+  <div class="flow-tab" onclick="showFlow(4)">5. Reporte desempeño</div>
+</nav>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FLUJO 1: BUSCAR Y VER PROPIEDAD               -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="flow active" id="flow-0">
+  <div class="flow-header">
+    <div class="badge">Flujo 1 · Cliente</div>
+    <h1>Buscar y ver propiedad</h1>
+    <p>El cliente navega el portal, aplica filtros, ve el detalle de una propiedad y la guarda como favorita.</p>
+  </div>
+  <div class="screens-row">
+
+    <!-- Pantalla 1: Búsqueda -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Portal Web – Inicio</span></div>
+      <div class="screen-body">
+        <div class="proto-nav">
+          <span class="pn-logo">Hogar Propiedades</span>
+          <div class="pn-links"><a href="#">Inicio</a><a href="#">Propiedades</a><a href="#">Contacto</a></div>
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input placeholder="Buscar por zona, precio, tipo..." value="Palermo, Buenos Aires"/>
+        </div>
+        <div class="filters">
+          <div class="filter-chip active">Casa</div>
+          <div class="filter-chip">Departamento</div>
+          <div class="filter-chip">Terreno</div>
+          <div class="filter-chip active">En venta</div>
+          <div class="filter-chip">Alquiler</div>
+        </div>
+        <div class="section-label">Resultados (12 propiedades)</div>
+        <div class="prop-card">
+          <div class="prop-img">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <div class="prop-badge gold">⭐ Destacada</div>
+          </div>
+          <div class="prop-info">
+            <h3>Casa en Palermo Hollywood</h3>
+            <div class="prop-loc">📍 Palermo, CABA</div>
+            <div class="prop-price">USD 285.000</div>
+            <div class="prop-meta">
+              <span>🛏 3 amb.</span>
+              <span>📐 180 m²</span>
+              <span>🚗 Cochera</span>
+            </div>
+          </div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-img" style="background:linear-gradient(135deg,#1a4731,#52b788)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <div class="prop-badge">En venta</div>
+          </div>
+          <div class="prop-info">
+            <h3>Departamento Moderno</h3>
+            <div class="prop-loc">📍 Palermo Soho, CABA</div>
+            <div class="prop-price">USD 175.000</div>
+            <div class="prop-meta">
+              <span>🛏 2 amb.</span>
+              <span>📐 75 m²</span>
+              <span>🌳 Balcón</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>selecciona</span>
+    </div>
+
+    <!-- Pantalla 2: Detalle -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Detalle de propiedad</span></div>
+      <div class="screen-body">
+        <div class="detail-imgs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <div class="img-count">📷 8 fotos</div>
+        </div>
+        <div class="detail-title">Casa en Palermo Hollywood</div>
+        <div class="detail-price">USD 285.000</div>
+        <div class="detail-chips">
+          <div class="detail-chip">🛏 3 ambientes</div>
+          <div class="detail-chip">📐 180 m²</div>
+          <div class="detail-chip">🏗 Lote 240 m²</div>
+          <div class="detail-chip">🚗 Cochera</div>
+          <div class="detail-chip">🌳 Patio</div>
+        </div>
+        <div class="detail-desc">Hermosa casa de dos plantas con amplio living-comedor, cocina integrada, tres dormitorios en suite y jardín con parrilla. Ubicada a metros de la Av. Santa Fe.</div>
+        <div class="row">
+          <div class="col">
+            <button class="btn-primary" style="margin-bottom:6px">📅 Solicitar visita</button>
+          </div>
+          <div class="col">
+            <button class="btn-secondary">♡ Guardar</button>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:10px">Agente responsable</div>
+        <div class="vendedor-row" style="border:none;padding:0">
+          <div class="vendedor-avatar">ML</div>
+          <div class="vendedor-info">
+            <h4>María López</h4>
+            <p>📞 +54 11 5555-1234</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>guarda favorita</span>
+    </div>
+
+    <!-- Pantalla 3: Favoritas -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Mis favoritas</span></div>
+      <div class="screen-body">
+        <div class="proto-nav">
+          <span class="pn-logo">Hogar Propiedades</span>
+          <div class="pn-links"><a href="#">Mi cuenta</a><a href="#">❤ Favoritas</a></div>
+        </div>
+        <div class="alert alert-success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>¡Propiedad guardada en tus favoritas!</span>
+        </div>
+        <div class="section-label">Mis propiedades guardadas (3)</div>
+        <div class="prop-card">
+          <div class="prop-img">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            <div class="prop-badge gold">❤ Favorita</div>
+          </div>
+          <div class="prop-info">
+            <h3>Casa en Palermo Hollywood</h3>
+            <div class="prop-loc">📍 Palermo, CABA</div>
+            <div class="prop-price">USD 285.000</div>
+          </div>
+        </div>
+        <div class="prop-card">
+          <div class="prop-img" style="background:linear-gradient(135deg,#1a4731,#52b788)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            <div class="prop-badge">❤ Favorita</div>
+          </div>
+          <div class="prop-info">
+            <h3>Departamento Moderno</h3>
+            <div class="prop-loc">📍 Palermo Soho, CABA</div>
+            <div class="prop-price">USD 175.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FLUJO 2: PUBLICAR PROPIEDAD                   -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="flow" id="flow-1">
+  <div class="flow-header">
+    <div class="badge">Flujo 2 · Admin</div>
+    <h1>Publicar propiedad</h1>
+    <p>El admin carga los datos e imágenes de una propiedad, asigna un vendedor y la publica en el portal.</p>
+  </div>
+  <div class="screens-row">
+
+    <!-- Pantalla 1: Formulario carga -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Nueva propiedad</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              Propiedades
+            </div>
+            <div class="sb-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              Clientes
+            </div>
+            <div class="sb-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+              Contratos
+            </div>
+            <div class="sb-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Reportes
+            </div>
+          </div>
+          <div class="admin-content">
+            <h2>+ Nueva Propiedad</h2>
+            <div class="steps">
+              <div class="step active"><div class="step-circle">1</div><div class="step-label">Datos</div></div>
+              <div class="step"><div class="step-circle">2</div><div class="step-label">Imágenes</div></div>
+              <div class="step"><div class="step-circle">3</div><div class="step-label">Asignar</div></div>
+              <div class="step"><div class="step-circle">4</div><div class="step-label">Publicar</div></div>
+            </div>
+            <div class="form-group"><label>Dirección *</label><input placeholder="Ej: Av. Santa Fe 1234, CABA"/></div>
+            <div class="row">
+              <div class="col"><div class="form-group"><label>Tipo *</label><select><option>Casa</option><option>Departamento</option><option>Terreno</option></select></div></div>
+              <div class="col"><div class="form-group"><label>Operación *</label><select><option>Venta</option><option>Alquiler</option></select></div></div>
+            </div>
+            <div class="row">
+              <div class="col"><div class="form-group"><label>Precio (USD) *</label><input placeholder="285000"/></div></div>
+              <div class="col"><div class="form-group"><label>Ambientes *</label><input placeholder="3"/></div></div>
+            </div>
+            <div class="form-group"><label>Descripción</label><textarea placeholder="Descripción de la propiedad..."></textarea></div>
+            <button class="btn-primary">Siguiente → Imágenes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>sube fotos</span>
+    </div>
+
+    <!-- Pantalla 2: Imágenes + asignar vendedor -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Imágenes y asignación</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Propiedades</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Contratos</div>
+          </div>
+          <div class="admin-content">
+            <h2>Imágenes y Asignación</h2>
+            <div class="steps">
+              <div class="step done"><div class="step-circle">✓</div><div class="step-label">Datos</div></div>
+              <div class="step active"><div class="step-circle">2</div><div class="step-label">Imágenes</div></div>
+              <div class="step active"><div class="step-circle">3</div><div class="step-label">Asignar</div></div>
+              <div class="step"><div class="step-circle">4</div><div class="step-label">Publicar</div></div>
+            </div>
+            <div class="upload-area">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p>Arrastrá las fotos aquí</p>
+              <span>o hacé clic para seleccionar</span>
+            </div>
+            <div class="section-label">Asignar vendedor</div>
+            <div class="form-group"><label>Vendedor responsable *</label>
+              <select><option>María López</option><option>Carlos Ruiz</option><option>Ana Gómez</option></select>
+            </div>
+            <div class="alert alert-info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>La propiedad quedará pendiente de aprobación antes de publicarse.</span>
+            </div>
+            <button class="btn-primary">Enviar para aprobación</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>aprueba y publica</span>
+    </div>
+
+    <!-- Pantalla 3: Confirmación publicación -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Publicada</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Propiedades</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</div>
+          </div>
+          <div class="admin-content">
+            <h2>Propiedad Publicada</h2>
+            <div class="steps">
+              <div class="step done"><div class="step-circle">✓</div><div class="step-label">Datos</div></div>
+              <div class="step done"><div class="step-circle">✓</div><div class="step-label">Imágenes</div></div>
+              <div class="step done"><div class="step-circle">✓</div><div class="step-label">Asignar</div></div>
+              <div class="step done"><div class="step-circle">✓</div><div class="step-label">Publicar</div></div>
+            </div>
+            <div class="success-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <h3>¡Propiedad publicada!</h3>
+              <p>Ya está visible en el portal para los clientes.</p>
+            </div>
+            <div class="contrato-item" style="margin-top:12px">
+              <div>
+                <h4>Casa en Palermo Hollywood</h4>
+                <p>Vendedor: María López · 8 fotos</p>
+              </div>
+              <span class="estado estado-pub">Publicada</span>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div class="col"><button class="btn-secondary" style="font-size:10px">⭐ Destacar</button></div>
+              <div class="col"><button class="btn-primary" style="font-size:10px">+ Nueva prop.</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FLUJO 3: SOLICITAR VISITA                      -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="flow" id="flow-2">
+  <div class="flow-header">
+    <div class="badge">Flujo 3 · Cliente + Admin + Vendedor</div>
+    <h1>Solicitar visita</h1>
+    <p>El cliente solicita una visita, el admin la asigna al vendedor y este confirma su disponibilidad.</p>
+  </div>
+  <div class="screens-row">
+
+    <!-- Pantalla 1: Formulario solicitud -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Portal – Solicitar visita</span></div>
+      <div class="screen-body">
+        <div class="proto-nav">
+          <span class="pn-logo">Hogar Propiedades</span>
+          <div class="pn-links"><a href="#">Mi cuenta</a></div>
+        </div>
+        <div class="detail-title" style="font-size:13px;margin-bottom:4px">Casa en Palermo Hollywood</div>
+        <div class="detail-price" style="font-size:13px;margin-bottom:12px">USD 285.000 · <span class="estado estado-pub">Publicada</span></div>
+        <div class="section-label">Tus datos</div>
+        <div class="form-group"><label>Nombre y apellido *</label><input placeholder="Juan Pérez" value="Juan Pérez"/></div>
+        <div class="form-group"><label>Teléfono *</label><input placeholder="+54 11 1234-5678" value="+54 11 1234-5678"/></div>
+        <div class="form-group"><label>Email *</label><input placeholder="juan@email.com" value="juan@email.com"/></div>
+        <div class="section-label">Fecha y hora preferida</div>
+        <div class="row">
+          <div class="col"><div class="form-group"><label>Fecha *</label><input type="date" value="2026-05-25"/></div></div>
+          <div class="col"><div class="form-group"><label>Horario *</label><select><option>10:00</option><option>12:00</option><option selected>15:00</option><option>17:00</option></select></div></div>
+        </div>
+        <div class="form-group"><label>Observaciones</label><textarea placeholder="Ej: Prefiero visitar un día de semana..."></textarea></div>
+        <button class="btn-primary">Enviar solicitud de visita</button>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>admin asigna</span>
+    </div>
+
+    <!-- Pantalla 2: Admin asigna -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Gestionar visita</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Visitas</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Contratos</div>
+          </div>
+          <div class="admin-content">
+            <h2>Nueva solicitud</h2>
+            <div class="alert alert-warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>Visita pendiente de asignación</span>
+            </div>
+            <div class="contrato-item">
+              <div>
+                <h4>Juan Pérez</h4>
+                <p>Casa en Palermo · 25/05 15:00 hs</p>
+              </div>
+              <span class="estado estado-pend">Pendiente</span>
+            </div>
+            <div class="form-group" style="margin-top:10px"><label>Asignar vendedor *</label>
+              <select><option selected>María López</option><option>Carlos Ruiz</option><option>Ana Gómez</option></select>
+            </div>
+            <div class="form-group"><label>Observaciones internas</label><textarea placeholder="Notas para el vendedor..."></textarea></div>
+            <button class="btn-primary">Asignar y notificar vendedor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>vendedor confirma</span>
+    </div>
+
+    <!-- Pantalla 3: Confirmación -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Portal – Visita confirmada</span></div>
+      <div class="screen-body">
+        <div class="proto-nav">
+          <span class="pn-logo">Hogar Propiedades</span>
+          <div class="pn-links"><a href="#">Mi cuenta</a></div>
+        </div>
+        <div class="success-box" style="margin-bottom:14px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <h3>¡Visita confirmada!</h3>
+          <p>Te notificamos por WhatsApp y email.</p>
+        </div>
+        <div class="contrato-item">
+          <div>
+            <h4>Casa en Palermo Hollywood</h4>
+            <p>📅 25 de mayo · 15:00 hs</p>
+            <p style="margin-top:2px">👤 Agente: María López</p>
+          </div>
+          <span class="estado estado-conf">Confirmada</span>
+        </div>
+        <div class="section-label">Próximas visitas</div>
+        <div class="contrato-item">
+          <div>
+            <h4>Depto. Palermo Soho</h4>
+            <p>📅 28 de mayo · 11:00 hs</p>
+          </div>
+          <span class="estado estado-pend">Pendiente</span>
+        </div>
+        <button class="btn-secondary" style="margin-top:10px">← Volver al portal</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FLUJO 4: GESTIONAR CONTRATO                   -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="flow" id="flow-3">
+  <div class="flow-header">
+    <div class="badge">Flujo 4 · Vendedor + Admin + Cliente</div>
+    <h1>Gestionar contrato</h1>
+    <p>El vendedor inicia el contrato, el admin lo aprueba, y el cliente lo acepta y firma para cerrar la operación.</p>
+  </div>
+  <div class="screens-row">
+
+    <!-- Pantalla 1: Vendedor inicia contrato -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Vendedor – Nuevo contrato</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Visitas</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Contratos</div>
+          </div>
+          <div class="admin-content">
+            <h2>+ Nuevo Contrato</h2>
+            <div class="form-group"><label>Tipo de contrato *</label>
+              <select><option selected>Compra-Venta</option><option>Alquiler</option></select>
+            </div>
+            <div class="form-group"><label>Propiedad *</label>
+              <select><option selected>Casa en Palermo Hollywood</option><option>Depto. Palermo Soho</option></select>
+            </div>
+            <div class="form-group"><label>Cliente *</label>
+              <select><option selected>Juan Pérez</option><option>Ana Torres</option></select>
+            </div>
+            <div class="row">
+              <div class="col"><div class="form-group"><label>Monto (USD) *</label><input value="285000"/></div></div>
+              <div class="col"><div class="form-group"><label>Fecha inicio *</label><input type="date" value="2026-06-01"/></div></div>
+            </div>
+            <div class="form-group"><label>Observaciones</label><textarea placeholder="Condiciones especiales del contrato..."></textarea></div>
+            <button class="btn-primary">Enviar al admin para aprobación</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>admin aprueba</span>
+    </div>
+
+    <!-- Pantalla 2: Admin aprueba -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Aprobar contrato</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Contratos</div>
+          </div>
+          <div class="admin-content">
+            <h2>Revisar Contrato</h2>
+            <div class="alert alert-warn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Contrato pendiente de aprobación</span>
+            </div>
+            <div class="contrato-item">
+              <div>
+                <h4>Compra-Venta · USD 285.000</h4>
+                <p>Casa Palermo · Cliente: Juan Pérez</p>
+                <p style="margin-top:2px">Vendedor: María López</p>
+              </div>
+              <span class="estado estado-pend">Pendiente</span>
+            </div>
+            <div class="section-label">Validación</div>
+            <div class="alert alert-success" style="margin-bottom:6px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Propiedad disponible ✓</span>
+            </div>
+            <div class="alert alert-success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Datos del cliente verificados ✓</span>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div class="col"><button class="btn-primary" style="background:#065f46">✓ Aprobar</button></div>
+              <div class="col"><button class="btn-primary" style="background:#991b1b">✗ Rechazar</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>cliente firma</span>
+    </div>
+
+    <!-- Pantalla 3: Cliente firma -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Portal – Contrato firmado</span></div>
+      <div class="screen-body">
+        <div class="proto-nav">
+          <span class="pn-logo">Hogar Propiedades</span>
+          <div class="pn-links"><a href="#">Mi cuenta</a></div>
+        </div>
+        <div class="alert alert-info" style="margin-bottom:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>Revisá el contrato y confirmá tu aceptación para finalizar la operación.</span>
+        </div>
+        <div class="contrato-item">
+          <div>
+            <h4>Contrato Compra-Venta</h4>
+            <p>Casa en Palermo Hollywood</p>
+            <p style="margin-top:2px;font-weight:600;color:#1a4731">USD 285.000</p>
+          </div>
+          <span class="estado estado-conf">Aprobado</span>
+        </div>
+        <div class="section-label">Resumen del contrato</div>
+        <table class="mini-table" style="margin-bottom:12px">
+          <tr><th>Tipo</th><td>Compra-Venta</td></tr>
+          <tr><th>Propiedad</th><td>Casa Palermo Hollywood</td></tr>
+          <tr><th>Monto</th><td>USD 285.000</td></tr>
+          <tr><th>Fecha inicio</th><td>01/06/2026</td></tr>
+          <tr><th>Vendedor</th><td>María López</td></tr>
+        </table>
+        <button class="btn-primary" style="margin-bottom:6px">✍ Aceptar y firmar contrato</button>
+        <button class="btn-secondary">Ver contrato completo (PDF)</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!-- FLUJO 5: REPORTE DE DESEMPEÑO                 -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="flow" id="flow-4">
+  <div class="flow-header">
+    <div class="badge">Flujo 5 · Admin</div>
+    <h1>Generar reporte de desempeño</h1>
+    <p>El admin elige el tipo de reporte, aplica filtros por fecha y visualiza estadísticas de ventas y vendedores.</p>
+  </div>
+  <div class="screens-row">
+
+    <!-- Pantalla 1: Filtros -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Generar reporte</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Props</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Clientes</div>
+            <div class="sb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Contratos</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Reportes</div>
+          </div>
+          <div class="admin-content">
+            <h2>Nuevo Reporte</h2>
+            <div class="form-group"><label>Tipo de reporte *</label>
+              <select><option selected>Desempeño de vendedores</option><option>Propiedades vendidas</option><option>Ingresos por mes</option><option>Visitas realizadas</option></select>
+            </div>
+            <div class="row">
+              <div class="col"><div class="form-group"><label>Desde *</label><input type="date" value="2026-01-01"/></div></div>
+              <div class="col"><div class="form-group"><label>Hasta *</label><input type="date" value="2026-05-19"/></div></div>
+            </div>
+            <div class="form-group"><label>Vendedor (opcional)</label>
+              <select><option>Todos los vendedores</option><option>María López</option><option>Carlos Ruiz</option><option>Ana Gómez</option></select>
+            </div>
+            <div class="form-group"><label>Tipo de operación</label>
+              <select><option>Ventas y alquileres</option><option>Solo ventas</option><option>Solo alquileres</option></select>
+            </div>
+            <button class="btn-primary">Generar reporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>genera</span>
+    </div>
+
+    <!-- Pantalla 2: Dashboard reporte -->
+    <div class="screen" style="min-width:320px">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Reporte visual</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Reportes</div>
+          </div>
+          <div class="admin-content">
+            <h2>Desempeño – Ene/May 2026</h2>
+            <div class="stats-row">
+              <div class="stat-card"><div class="sv">24</div><div class="sl">Operaciones</div></div>
+              <div class="stat-card"><div class="sv" style="color:#c9a84c">$2.1M</div><div class="sl">Ingresos USD</div></div>
+              <div class="stat-card"><div class="sv">87</div><div class="sl">Visitas</div></div>
+            </div>
+            <div class="section-label">Ventas por mes</div>
+            <div class="bar-chart">
+              <div><div class="bar" style="height:40%"></div><div class="bar-label">Ene</div></div>
+              <div><div class="bar" style="height:55%"></div><div class="bar-label">Feb</div></div>
+              <div><div class="bar" style="height:70%"></div><div class="bar-label">Mar</div></div>
+              <div><div class="bar" style="height:50%"></div><div class="bar-label">Abr</div></div>
+              <div><div class="bar" style="height:90%"></div><div class="bar-label">May</div></div>
+            </div>
+            <div class="section-label">Ranking vendedores</div>
+            <div class="vendedor-row">
+              <div class="vendedor-avatar">ML</div>
+              <div class="vendedor-info">
+                <h4>María López</h4>
+                <div class="prog-bar"><div class="prog-bar-fill" style="width:85%"></div></div>
+              </div>
+              <div class="vendedor-score">10 ops</div>
+            </div>
+            <div class="vendedor-row">
+              <div class="vendedor-avatar">CR</div>
+              <div class="vendedor-info">
+                <h4>Carlos Ruiz</h4>
+                <div class="prog-bar"><div class="prog-bar-fill" style="width:60%"></div></div>
+              </div>
+              <div class="vendedor-score">7 ops</div>
+            </div>
+            <div class="vendedor-row" style="border:none">
+              <div class="vendedor-avatar">AG</div>
+              <div class="vendedor-info">
+                <h4>Ana Gómez</h4>
+                <div class="prog-bar"><div class="prog-bar-fill" style="width:40%"></div></div>
+              </div>
+              <div class="vendedor-score">5 ops</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow-between">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <span>exporta</span>
+    </div>
+
+    <!-- Pantalla 3: Exportar -->
+    <div class="screen">
+      <div class="screen-bar"><div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div><span class="screen-title">Panel Admin – Exportar</span></div>
+      <div class="screen-body">
+        <div class="admin-layout">
+          <div class="admin-sidebar">
+            <div class="sb-logo">Hogar<br/>Props</div>
+            <div class="sb-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Reportes</div>
+          </div>
+          <div class="admin-content">
+            <h2>Exportar Reporte</h2>
+            <div class="section-label">Formato de exportación</div>
+            <div class="contrato-item" style="cursor:pointer;border-color:#2d6a4f">
+              <div><h4>📄 PDF</h4><p>Reporte visual con gráficos</p></div>
+              <span class="estado estado-act">✓ Seleccionado</span>
+            </div>
+            <div class="contrato-item" style="cursor:pointer">
+              <div><h4>📊 Excel (.xlsx)</h4><p>Datos en tabla para analizar</p></div>
+            </div>
+            <div class="section-label">Incluir en el reporte</div>
+            <div style="font-size:11px;color:var(--gray-600);display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+              <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked/> Gráfico de ventas por mes</label>
+              <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked/> Ranking de vendedores</label>
+              <label style="display:flex;align-items:center;gap:6px"><input type="checkbox" checked/> Estadísticas generales</label>
+              <label style="display:flex;align-items:center;gap:6px"><input type="checkbox"/> Detalle de cada operación</label>
+            </div>
+            <button class="btn-primary" style="margin-bottom:6px">⬇ Descargar reporte</button>
+            <button class="btn-secondary">← Nuevo reporte</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function showFlow(idx) {
+    document.querySelectorAll('.flow').forEach((f,i) => f.classList.toggle('active', i===idx));
+    document.querySelectorAll('.flow-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  }
+</script>
+</body>
+</html>
